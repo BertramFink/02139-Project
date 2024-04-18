@@ -35,7 +35,7 @@ class VendingMachine(maxCount: Int) extends Module {
   sum := fsm.io.newSum
 
   // Seven Segment Display
-  val sevSegController = Module(new SevenSegController)
+  val sevSegController = Module(new SevenSegController(maxCount))
 
   sevSegController.io.price := io.price
   sevSegController.io.sum := sum
