@@ -48,19 +48,20 @@ class TxtController(maxCount: Int) extends Module {
       }
     }
     is(1.U) { // Display "SODA"
-    switch(segSelect) {
-      is(0.U) {
-        sevSeg.io.in := 0.U
-      } // A
-      is(1.U) {
-        sevSeg.io.in := 3.U
-      } // D
-      is(2.U) {
-        sevSeg.io.in := 14.U
-      } // O
-      is(3.U) {
-        sevSeg.io.in := 18.U
-      } // S
+      switch(segSelect) {
+        is(0.U) {
+          sevSeg.io.in := 0.U
+        } // A
+        is(1.U) {
+          sevSeg.io.in := 3.U
+        } // D
+        is(2.U) {
+          sevSeg.io.in := 14.U
+        } // O
+        is(3.U) {
+          sevSeg.io.in := 18.U
+        } // S
+      }
     }
   }
   io.seg := ~sevSeg.io.out
