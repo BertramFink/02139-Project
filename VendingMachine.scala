@@ -62,7 +62,7 @@ class VendingMachine(maxCount: Int) extends Module {
   val alarmSelect = RegInit(0.U(1.W))
   when(fsm.io.alarm === true.B) {
     counter := counter + 1.U
-    when (counter === (maxCount*10).U) {
+    when (counter === (maxCount*1000).U) {
       alarmSelect := alarmSelect + 1.U
       counter := 0.U
     }
