@@ -30,40 +30,37 @@ class TxtController(maxCount: Int) extends Module {
 
   //Select characters to display
   sevSeg.io.in := 0.U
-  switch(txtCounter) {
-    is(0.U) { // Display "FOOD"
-      switch(segSelect) {
-        is(0.U) {
-          sevSeg.io.in := 3.U
-        } // D
-        is(1.U) {
-          sevSeg.io.in := 14.U
-        } // O
-        is(2.U) {
-          sevSeg.io.in := 14.U
-        } // O
-        is(3.U) {
-          sevSeg.io.in := 5.U
-        } // F
-      }
+  when(txtSelect === 0.U) { // Display "FOOD"
+    switch(segSelect) {
+      is(0.U) {
+        sevSeg.io.in := 3.U
+      } // D
+      is(1.U) {
+        sevSeg.io.in := 14.U
+      } // O
+      is(2.U) {
+        sevSeg.io.in := 14.U
+      } // O
+      is(3.U) {
+        sevSeg.io.in := 5.U
+      } // F
     }
-    is(1.U) { // Display "SODA"
-      switch(segSelect) {
-        is(0.U) {
-          sevSeg.io.in := 0.U
-        } // A
-        is(1.U) {
-          sevSeg.io.in := 3.U
-        } // D
-        is(2.U) {
-          sevSeg.io.in := 14.U
-        } // O
-        is(3.U) {
-          sevSeg.io.in := 18.U
-        } // S
-      }
+  } .elsewhen(txtSelect === 1.U) { // Display "SODA"
+    switch(segSelect) {
+      is(0.U) {
+        sevSeg.io.in := 0.U
+      } // A
+      is(1.U) {
+        sevSeg.io.in := 3.U
+      } // D
+      is(2.U) {
+        sevSeg.io.in := 14.U
+      } // O
+      is(3.U) {
+        sevSeg.io.in := 18.U
+      } // S
     }
-  }
+    }
   io.seg := ~sevSeg.io.out
 
   // Choose Display
