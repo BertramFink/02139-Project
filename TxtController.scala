@@ -23,7 +23,7 @@ class TxtController(maxCount: Int) extends Module {
   val txtCounter = RegInit(0.U(32.W))
 
   txtCounter := txtCounter + 1.U
-  when(txtCounter === (maxCount*100).U) {
+  when(txtCounter === (maxCount*1000).U) {
     txtCounter := 0.U
     txtSelect := txtSelect + 1.U
   }
