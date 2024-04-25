@@ -14,7 +14,7 @@ class TxtController(maxCount: Int) extends Module {
   val counter = RegInit(0.U(17.W))
 
   counter := counter + 1.U
-  when(counter === maxCount.U) {
+  when(counter === (maxCount*100).U) {
     counter := 0.U
     segSelect := segSelect + 1.U
   }
@@ -23,26 +23,44 @@ class TxtController(maxCount: Int) extends Module {
   val txtCounter = RegInit(0.U(32.W))
 
   txtCounter := txtCounter + 1.U
-  when(txtCounter === (maxCount*10).U) {
+  when(txtCounter === maxCount.U) {
     txtCounter := 0.U
     txtSelect := txtSelect + 1.U
   }
 
   //Select characters to display
   sevSeg.io.in := 0.U
-  when (txtCounter === 0.U) {
-    switch(segSelect) {
-      is (0.U) { sevSeg.io.in := 3.U } // D
-      is (1.U) { sevSeg.io.in := 14.U } // O
-      is (2.U) { sevSeg.io.in := 14.U } // O
-      is (3.U) { sevSeg.io.in := 5.U } // F
+  switch(txtCounter) {
+    is(0.U) { // Display "FOOD"
+      switch(segSelect) {
+        is(0.U) {
+          sevSeg.io.in := 3.U
+        } // D
+        is(1.U) {
+          sevSeg.io.in := 14.U
+        } // O
+        is(2.U) {
+          sevSeg.io.in := 14.U
+        } // O
+        is(3.U) {
+          sevSeg.io.in := 5.U
+        } // F
+      }
     }
-  } .otherwise {
+    is(1.U) { // Display "SODA"
     switch(segSelect) {
-      is (0.U) { sevSeg.io.in := 0.U } // A
-      is (1.U) { sevSeg.io.in := 3.U } // D
-      is (2.U) { sevSeg.io.in := 14.U } // O
-      is (3.U) { sevSeg.io.in := 18.U } // S
+      is(0.U) {
+        sevSeg.io.in := 0.U
+      } // A
+      is(1.U) {
+        sevSeg.io.in := 3.U
+      } // D
+      is(2.U) {
+        sevSeg.io.in := 14.U
+      } // O
+      is(3.U) {
+        sevSeg.io.in := 18.U
+      } // S
     }
   }
   io.seg := ~sevSeg.io.out

@@ -22,15 +22,24 @@ class FSM extends Module {
   
   // States
   object State extends ChiselEnum {
-    val idle, coin2, coin5, buy, alarm, releaseCan = Value
+    val idle, txt, coin2, coin5, buy, alarm, releaseCan = Value
   }
   import State._
 
   // The state register
-  val stateReg = RegInit(idle)
+  val stateReg = RegInit(txt)
 
   // Next state
   switch ( stateReg ) {
+    is (txt) {
+      when(rising_edge(io.coin2)) {
+        stateReg := idle
+      }.elsewhen(rising_edge(io.coin5)) {
+        stateReg := idle
+      }.elsewhen(rising_edge(io.buy)) {
+        stateReg := idle
+      }
+    }
     is (idle) {
       when(rising_edge(io.coin2)) {
         stateReg := coin2
@@ -71,7 +80,7 @@ class FSM extends Module {
   io.releaseCan := false.B
   io.idleScreen := false.B
   switch (stateReg) {
-    is (idle) {
+    is (txt) {
       io.idleScreen := true.B
     }
     is (coin2) {
