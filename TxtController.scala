@@ -14,7 +14,7 @@ class TxtController(maxCount: Int) extends Module {
   val counter = RegInit(0.U(17.W))
 
   counter := counter + 1.U
-  when(counter === (maxCount*100).U) {
+  when(counter === (maxCount).U) {
     counter := 0.U
     segSelect := segSelect + 1.U
   }
@@ -23,7 +23,7 @@ class TxtController(maxCount: Int) extends Module {
   val txtCounter = RegInit(0.U(32.W))
 
   txtCounter := txtCounter + 1.U
-  when(txtCounter === maxCount.U) {
+  when(txtCounter === (maxCount*100).U) {
     txtCounter := 0.U
     txtSelect := txtSelect + 1.U
   }
