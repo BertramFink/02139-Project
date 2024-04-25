@@ -49,33 +49,39 @@ class VendingMachine(maxCount: Int) extends Module {
   }
 
   // Display Select
-  val counter = RegInit(0.U(17.W))
-  val alarmSelect = RegInit(0.U(1.W))
   val txtController = Module(new TxtController(maxCount))
   when (fsm.io.idleScreen) {
     io.an := txtController.io.an
     io.seg := txtController.io.seg
-  } .elsewhen(fsm.io.alarm) {
-    when (counter === (maxCount*100).U) {
+  }  .otherwise {
+    io.seg := sevSegController.io.seg
+    io.an := sevSegController.io.an
+  }
+
+  val counter = RegInit(0.U(17.W))
+  val alarmSelect = RegInit(0.U(1.W))
+  when(fsm.io.alarm === true.B) {
+    counter := counter + 1.U
+    when (counter === (maxCount*10).U) {
       alarmSelect := alarmSelect + 1.U
       counter := 0.U
     }
-    
     switch(alarmSelect) {
-      is(0.U) { io.an := "b0000".U}
+      is(0.U) {
+        io.an := "b0000".U
+        io.seg := "b1111111".U
+      }
       is(1.U) {
         io.seg := sevSegController.io.seg
         io.an := sevSegController.io.an
       }
     }
-  } .otherwise {
-    io.seg := sevSegController.io.seg
-    io.an := sevSegController.io.an
   }
 
   // LEDs
   io.releaseCan := fsm.io.releaseCan
   io.alarm := fsm.io.alarm
+
 }
 
 // generate Verilog
