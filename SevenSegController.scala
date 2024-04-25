@@ -14,7 +14,7 @@ class SevenSegController(maxCount: Int) extends Module {
   val bcdSum = Module(new BcdTable())
 
   // Initialize 'Seven Segment Display'
-  val sevSeg = Module(new SevenSegDec)
+  val sevSeg = Module(new SevenSegNum)
 
   val segSelect = RegInit(0.U(2.W))
   val counter = RegInit(0.U(17.W))

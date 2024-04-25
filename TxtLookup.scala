@@ -1,7 +1,7 @@
 import chisel3._
 import chisel3.util._
 
-class SevenSegTxt extends Module {
+class TxtLookup extends Module {
   val io = IO(new Bundle {
     val in = Input(UInt(5.W))
     val out = Output(UInt(7.W))
@@ -26,7 +26,7 @@ class SevenSegTxt extends Module {
     is (13.U) { sevSeg := "b0110111".U } // N
     is (14.U) { sevSeg := "b1011100".U } // O
     is (15.U) { sevSeg := "b1110011".U } // P
-    is (16.U) { sevSeg := "11101011".U } // q
+    is (16.U) { sevSeg := "b1101011".U } // q
     is (17.U) { sevSeg := "b0110001".U } // r
     is (18.U) { sevSeg := "b1101101".U } // S
     is (19.U) { sevSeg := "b1111000".U } // t

@@ -1,14 +1,14 @@
 import chisel3._
 import chisel3.util._
 
-class TextController(maxCount: Int) extends Module {
+class TxtController(maxCount: Int) extends Module {
   val io = IO(new Bundle {
     val seg = Output(UInt(7.W))
     val an = Output(UInt(4.W))
   })
 
   // Initialize 'Seven Segment Display'
-  val sevSeg = Module(new SevenSegTxt)
+  val sevSeg = Module(new TxtLookup)
 
   val segSelect = RegInit(0.U(2.W))
   val counter = RegInit(0.U(17.W))
@@ -23,36 +23,36 @@ class TextController(maxCount: Int) extends Module {
   val txtCounter = RegInit(0.U(32.W))
 
   txtCounter := txtCounter + 1.U
-  when(txtCounter === maxCount.U*100) {
+  when(txtCounter === (maxCount*100).U) {
     txtCounter := 0.U
     txtSelect := txtSelect + 1.U
   }
-  var seg = Wire(Vec(4, UInt(2.W)))
 
-  val seg1 = WireDefault(0.U)
-  val seg2 = WireDefault(0.U)
-  val seg3 = WireDefault(0.U)
-  val seg4 = WireDefault(0.U)
-
+  //Select characters to display
+  sevSeg.io.in := DontCare
   when (txtCounter === 0.U) {
     switch(segSelect) {
-      is (0.U) { sevSeg.io.in := 5.U }
-      is (1.U) { sevSeg.io.in := 14.U }
-      is (2.U) { sevSeg.io.in := 14.U }
-      is (3.U) { sevSeg.io.in := 3.U }
+      is (0.U) { sevSeg.io.in := 5.U } // F
+      is (1.U) { sevSeg.io.in := 14.U } // O
+      is (2.U) { sevSeg.io.in := 14.U } // O
+      is (3.U) { sevSeg.io.in := 3.U } // D
     }
   } .otherwise {
     switch(segSelect) {
-      is (0.U) { sevSeg.io.in := 18.U }
-      is (1.U) { sevSeg.io.in := 14.U }
-      is (2.U) { sevSeg.io.in := 3.U }
-      is (3.U) { sevSeg.io.in := 0.U }
+      is (0.U) { sevSeg.io.in := 18.U } // S
+      is (1.U) { sevSeg.io.in := 14.U } // O
+      is (2.U) { sevSeg.io.in := 3.U } // D
+      is (3.U) { sevSeg.io.in := 0.U } // A
     }
   }
+  io.seg := sevSeg.io.out
 
-  seg(segSelect) := sevSeg.io.out
-
-
-
-  
+  // Choose Display
+  io.an := DontCare
+  switch(segSelect) {
+    is (0.U) { io.an := "b1110".U }
+    is (1.U) { io.an := "b1101".U }
+    is (2.U) { io.an := "b1011".U }
+    is (3.U) { io.an := "b0111".U }
+  }
 }

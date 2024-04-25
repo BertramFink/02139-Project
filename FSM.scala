@@ -2,7 +2,7 @@ import chisel3._
 import chisel3.util._
 
 class FSM extends Module {
-  val io = IO(new Bundle {
+  val io = IO(new   Bundle {
     val coin2 = Input(Bool())
     val coin5 = Input(Bool())
     val buy = Input(Bool())
@@ -11,7 +11,9 @@ class FSM extends Module {
     val newSum = Output(UInt(8.W))
     val alarm = Output(Bool())
     val releaseCan = Output(Bool())
+    val idleScreen = Output(Bool())
   })
+  io.idleScreen := DontCare
 
   // Rising Edge
   def rising_edge(input:Bool):Bool = {
@@ -30,11 +32,16 @@ class FSM extends Module {
   // Next state
   switch ( stateReg ) {
     is (idle) {
+      io.idleScreen := true.B
+
       when(rising_edge(io.coin2)) {
+        io.idleScreen := false.B
         stateReg := coin2
       }.elsewhen(rising_edge(io.coin5)) {
+        io.idleScreen := false.B
         stateReg := coin5
       }.elsewhen(rising_edge(io.buy)) {
+        io.idleScreen := false.B
         stateReg := buy
       }
     }
