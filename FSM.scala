@@ -13,7 +13,7 @@ class FSM extends Module {
     val releaseCan = Output(Bool())
     val idleScreen = Output(Bool())
   })
-  io.idleScreen := DontCare
+  io.idleScreen := false.B
 
   // Rising Edge
   def rising_edge(input:Bool):Bool = {
@@ -32,16 +32,11 @@ class FSM extends Module {
   // Next state
   switch ( stateReg ) {
     is (idle) {
-      io.idleScreen := true.B
-
       when(rising_edge(io.coin2)) {
-        io.idleScreen := false.B
         stateReg := coin2
       }.elsewhen(rising_edge(io.coin5)) {
-        io.idleScreen := false.B
         stateReg := coin5
       }.elsewhen(rising_edge(io.buy)) {
-        io.idleScreen := false.B
         stateReg := buy
       }
     }
@@ -74,7 +69,11 @@ class FSM extends Module {
   io.newSum := io.sum
   io.alarm := false.B
   io.releaseCan := false.B
+  io.idleScreen := false.B
   switch (stateReg) {
+    is (idle) {
+      io.idleScreen := true.B
+    }
     is (coin2) {
       io.newSum := 99.U  
       when(io.sum < 98.U) {

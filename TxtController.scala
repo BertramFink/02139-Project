@@ -23,32 +23,32 @@ class TxtController(maxCount: Int) extends Module {
   val txtCounter = RegInit(0.U(32.W))
 
   txtCounter := txtCounter + 1.U
-  when(txtCounter === (maxCount*100).U) {
+  when(txtCounter === (maxCount*10).U) {
     txtCounter := 0.U
     txtSelect := txtSelect + 1.U
   }
 
   //Select characters to display
-  sevSeg.io.in := DontCare
+  sevSeg.io.in := 0.U
   when (txtCounter === 0.U) {
     switch(segSelect) {
-      is (0.U) { sevSeg.io.in := 5.U } // F
+      is (0.U) { sevSeg.io.in := 3.U } // D
       is (1.U) { sevSeg.io.in := 14.U } // O
       is (2.U) { sevSeg.io.in := 14.U } // O
-      is (3.U) { sevSeg.io.in := 3.U } // D
+      is (3.U) { sevSeg.io.in := 5.U } // F
     }
   } .otherwise {
     switch(segSelect) {
-      is (0.U) { sevSeg.io.in := 18.U } // S
-      is (1.U) { sevSeg.io.in := 14.U } // O
-      is (2.U) { sevSeg.io.in := 3.U } // D
-      is (3.U) { sevSeg.io.in := 0.U } // A
+      is (0.U) { sevSeg.io.in := 0.U } // A
+      is (1.U) { sevSeg.io.in := 3.U } // D
+      is (2.U) { sevSeg.io.in := 14.U } // O
+      is (3.U) { sevSeg.io.in := 18.U } // S
     }
   }
-  io.seg := sevSeg.io.out
+  io.seg := ~sevSeg.io.out
 
   // Choose Display
-  io.an := DontCare
+  io.an := "b1111".U
   switch(segSelect) {
     is (0.U) { io.an := "b1110".U }
     is (1.U) { io.an := "b1101".U }
