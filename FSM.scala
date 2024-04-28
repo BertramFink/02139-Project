@@ -33,11 +33,7 @@ class FSM extends Module {
   // Next state
   switch ( stateReg ) {
     is (txt) {
-      when(rising_edge(io.coin2)) {
-        stateReg := idle
-      }.elsewhen(rising_edge(io.coin5)) {
-        stateReg := idle
-      }.elsewhen(rising_edge(io.buy)) {
+      when(io.coin2 | io.coin5 | io.buy) {
         stateReg := idle
       }
     }
