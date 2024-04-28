@@ -58,11 +58,11 @@ class VendingMachine(maxCount: Int) extends Module {
     io.an := sevSegController.io.an
   }
 
-  val counter = RegInit(0.U(17.W))
+  val counter = RegInit(0.U(32.W))
   val alarmSelect = RegInit(0.U(1.W))
   when(fsm.io.alarm === true.B) {
     counter := counter + 1.U
-    when (counter === (maxCount*1000).U) {
+    when (counter === (maxCount*40).U) {
       alarmSelect := alarmSelect + 1.U
       counter := 0.U
     }
@@ -80,7 +80,7 @@ class VendingMachine(maxCount: Int) extends Module {
 
   // LEDs
   io.releaseCan := fsm.io.releaseCan
-  io.alarm := fsm.io.alarm
+  io.alarm := alarmSelect
 
 }
 
