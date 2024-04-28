@@ -21,24 +21,25 @@ class VendingMachine(maxCount: Int) extends Module {
   coin5_sync := io.coin5
   buy_sync := io.buy
 
-  // Bank
-  val sum = RegInit(0.U(8.W))
-
-  // Finite State Machine
+  // Finite State Machine and Datapath
   val fsm = Module(new FSM)
+  val datapath = Module(new DataPath)
+
   fsm.io.coin2 := coin2_sync
   fsm.io.coin5 := coin5_sync
   fsm.io.buy := buy_sync
-  fsm.io.sum := sum
-  fsm.io.price := io.price
+  fsm.io.enoughMoney := datapath.io.enoughMoney
 
-  sum := fsm.io.newSum
+  datapath.io.add2 := fsm.io.add2
+  datapath.io.add5 := fsm.io.add5
+  datapath.io.purchase := fsm.io.purchase
+  datapath.io.price := io.price
 
   // Seven Segment Display
   val sevSegController = Module(new SevenSegController(maxCount))
 
   sevSegController.io.price := io.price
-  sevSegController.io.sum := sum
+  sevSegController.io.sum := datapath.io.sum
 
   io.seg := sevSegController.io.seg
   io.an := sevSegController.io.an

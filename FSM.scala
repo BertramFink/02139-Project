@@ -6,11 +6,12 @@ class FSM extends Module {
     val coin2 = Input(Bool())
     val coin5 = Input(Bool())
     val buy = Input(Bool())
-    val price = Input(UInt(5.W))
-    val sum = Input(UInt(8.W))
-    val newSum = Output(UInt(8.W))
+    val enoughMoney = Input(Bool())
     val alarm = Output(Bool())
     val releaseCan = Output(Bool())
+    val add2 = Output(Bool())
+    val add5 = Output(Bool())
+    val purchase = Output(Bool())
   })
 
   // Rising Edge
@@ -46,7 +47,7 @@ class FSM extends Module {
     }
     is (buy) {
       stateReg := releaseCan
-      when(io.sum < io.price) {
+      when(io.enoughMoney === false.B) {
         stateReg := alarm
       }
     }
@@ -64,41 +65,24 @@ class FSM extends Module {
     }
   }
 
-  io.newSum := io.sum
-  io.alarm := false.B
-  io.releaseCan := false.B
-  switch (stateReg) {
-    is (coin2) {
-      io.newSum := 99.U  
-      when(io.sum < 98.U) {
-        io.newSum := io.sum + 2.U
-      }
-    }
-    is (coin5) {
-      io.newSum := 99.U
-      when(io.sum < 95.U) {
-        io.newSum := io.sum + 5.U
-      }
-    }
-    is (buy) {
-      io.newSum := io.sum
-      // io.alarm := true.B
-      when(io.sum >= io.price) {
-        io.newSum := io.sum - io.price
-        // io.alarm := false.B
-      }
-    }
-    is (releaseCan) {
-      io.releaseCan := true.B
-    }
-    is (alarm) {
-      io.alarm := true.B
-    }
+  io.add2 := false.B
+  when (stateReg === coin2) {
+    io.add2 := true.B
   }
-
-  // Output logic
-  // io.alarm := false.B
-  // when (io.sum < io.price) {
-  //   io.alarm := io.buy
-  // }
+  io.add5 := false.B
+  when (stateReg === coin5) {
+    io.add5 := true.B
+  }
+  io.purchase := false.B
+  when (stateReg === buy & io.enoughMoney) {
+    io.purchase := true.B
+  }
+  io.alarm := false.B
+  when (stateReg === alarm) {
+    io.alarm := true.B
+  }
+  io.releaseCan := false.B
+  when (stateReg === releaseCan) {
+    io.releaseCan := true.B
+  }
 }
