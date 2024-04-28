@@ -38,26 +38,12 @@ class VendingMachine(maxCount: Int) extends Module {
   // Seven Segment Display
   val sevSegController = Module(new SevenSegController(maxCount))
 
+  sevSegController.io.idleScreen := fsm.io.idleScreen
   sevSegController.io.price := io.price
   sevSegController.io.sum := datapath.io.sum
 
-
-  val init = RegInit(1.U(1.W))
-  when (init === 1.U) {
-    init := 0.U
-    io.seg := "b0111111".U
-    io.an := "b0000".U
-  }
-
-  // Idle Screen
-  val txtController = Module(new TxtController(maxCount))
-  when (fsm.io.idleScreen) {
-    io.an := txtController.io.an
-    io.seg := txtController.io.seg
-  } .otherwise {
-    io.seg := sevSegController.io.seg
-    io.an := sevSegController.io.an
-  }
+  io.seg := sevSegController.io.seg
+  io.an := sevSegController.io.an
 
   // LEDs
   io.releaseCan := fsm.io.releaseCan

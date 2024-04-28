@@ -1,7 +1,7 @@
 import chisel3._
 import chisel3.util._
 
-class TxtLookup extends Module {
+class SevenSegChar extends Module {
   val io = IO(new Bundle {
     val in = Input(UInt(5.W))
     val out = Output(UInt(7.W))
