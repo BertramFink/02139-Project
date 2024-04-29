@@ -6,6 +6,7 @@ class FSM extends Module {
     val coin2 = Input(Bool())
     val coin5 = Input(Bool())
     val buy = Input(Bool())
+    val nextItem = Input(Bool())
     val enoughMoney = Input(Bool())
     val alarm = Output(Bool())
     val releaseCan = Output(Bool())
@@ -13,6 +14,7 @@ class FSM extends Module {
     val add2 = Output(Bool())
     val add5 = Output(Bool())
     val purchase = Output(Bool())
+    val cycle = Output(Bool())
   })
   io.idleScreen := false.B
 
@@ -23,7 +25,7 @@ class FSM extends Module {
   
   // States
   object State extends ChiselEnum {
-    val idle, txt, coin2, coin5, buy, alarm, releaseCan = Value
+    val idle, txt, coin2, coin5, nextItem, buy, alarm, releaseCan = Value
   }
   import State._
 
@@ -42,6 +44,8 @@ class FSM extends Module {
         stateReg := coin2
       }.elsewhen(rising_edge(io.coin5)) {
         stateReg := coin5
+      }.elsewhen(rising_edge(io.nextItem)) {
+        stateReg := nextItem
       }.elsewhen(io.buy) {
         stateReg := buy
       }
@@ -50,6 +54,9 @@ class FSM extends Module {
       stateReg := idle
     }
     is (coin5) {
+      stateReg := idle
+    }
+    is (nextItem) {
       stateReg := idle
     }
     is (buy) {
@@ -75,6 +82,7 @@ class FSM extends Module {
   io.idleScreen := (stateReg === txt)
   io.add2       := (stateReg === coin2)
   io.add5       := (stateReg === coin5)
+  io.cycle      := (stateReg === nextItem)
   io.purchase   := (stateReg === buy & io.enoughMoney)
   io.alarm      := (stateReg === alarm)
   io.releaseCan := (stateReg === releaseCan)

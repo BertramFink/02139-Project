@@ -5,15 +5,34 @@ class DataPath extends Module {
   val io = IO(new Bundle {
     val add2 = Input(Bool())
     val add5 = Input(Bool())
+    val cycle = Input(Bool())
     val purchase = Input(Bool())
+    val setPrice = Input(Bool())
     val price = Input(UInt(5.W))
+    val activePrice = Output(UInt(5.W))
     val sum = Output(UInt(8.W))
     val enoughMoney = Output(Bool())
   })
 
+  val priceAddr = RegInit(0.U(2.W))
+  when (io.cycle === true.B) {
+    priceAddr := priceAddr + 1.U
+  }
+
+  val priceMem = SyncReadMem(4, UInt(5.W))
+
+  val price = Wire(UInt(5.W))
+  price := priceMem.read(priceAddr)
+  
+  io.activePrice := price
+
+  when (io.setPrice === true.B) {
+    priceMem.write(priceAddr, io.price)
+  }
+
   val sum = RegInit(0.U(8.W))
   io.sum := sum
-  io.enoughMoney := (sum >= io.price)
+  io.enoughMoney := (sum >= price)
 
   sum := sum
   when (io.add2 === true.B) {
@@ -27,6 +46,6 @@ class DataPath extends Module {
       sum := sum + 5.U
     }
   }.elsewhen (io.purchase === true.B) {
-    sum := sum - io.price
+    sum := sum - price
   }
 }
