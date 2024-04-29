@@ -42,7 +42,7 @@ class FSM extends Module {
         stateReg := coin2
       }.elsewhen(rising_edge(io.coin5)) {
         stateReg := coin5
-      }.elsewhen(rising_edge(io.buy)) {
+      }.elsewhen(io.buy) {
         stateReg := buy
       }
     }
@@ -72,28 +72,10 @@ class FSM extends Module {
     }
   }
 
-  io.idleScreen := false.B
-  when (stateReg === txt) {
-    io.idleScreen := true.B
-  }
-  io.add2 := false.B
-  when (stateReg === coin2) {
-    io.add2 := true.B
-  }
-  io.add5 := false.B
-  when (stateReg === coin5) {
-    io.add5 := true.B
-  }
-  io.purchase := false.B
-  when (stateReg === buy & io.enoughMoney) {
-    io.purchase := true.B
-  }
-  io.alarm := false.B
-  when (stateReg === alarm) {
-    io.alarm := true.B
-  }
-  io.releaseCan := false.B
-  when (stateReg === releaseCan) {
-    io.releaseCan := true.B
-  }
+  io.idleScreen := (stateReg === txt)
+  io.add2       := (stateReg === coin2)
+  io.add5       := (stateReg === coin5)
+  io.purchase   := (stateReg === buy & io.enoughMoney)
+  io.alarm      := (stateReg === alarm)
+  io.releaseCan := (stateReg === releaseCan)
 }
