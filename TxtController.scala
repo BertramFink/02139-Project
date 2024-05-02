@@ -20,7 +20,7 @@ class TxtController(maxCount: Int) extends Module {
     segSelect := segSelect + 1.U
   }
 
-  val txtSelect = RegInit(0.U(1.W))
+  val txtSelect = RegInit(0.U(4.W))
   val txtCounter = RegInit(0.U(32.W))
 
   when(io.active) {

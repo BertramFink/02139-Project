@@ -24,12 +24,12 @@ class VendingMachine(maxCount: Int) extends Module {
   // Finite State Machine and Datapath
   val fsm = Module(new FSM)
   val datapath = Module(new DataPath)
-
+  // FSM Inputs
   fsm.io.coin2 := coin2_sync
   fsm.io.coin5 := coin5_sync
   fsm.io.buy := buy_sync
   fsm.io.enoughMoney := datapath.io.enoughMoney
-
+  // Data Inputs
   datapath.io.add2 := fsm.io.add2
   datapath.io.add5 := fsm.io.add5
   datapath.io.purchase := fsm.io.purchase
@@ -37,16 +37,16 @@ class VendingMachine(maxCount: Int) extends Module {
 
   // Seven Segment Display
   val sevSegController = Module(new SevenSegController(maxCount))
-
+  // SevSeg Inputs
   sevSegController.io.price := io.price
   sevSegController.io.sum := datapath.io.sum
 
   // Idle Screen
   val txtController = Module(new TxtController(maxCount))
-
+  // Idle Inputs
   txtController.io.active := false.B
 
-
+  // Initialization of outputs
   val init = RegInit(1.U(1.W))
   when (init === 1.U) {
     init := 0.U
@@ -54,7 +54,7 @@ class VendingMachine(maxCount: Int) extends Module {
     io.an := "b0000".U
   }
 
-  // Screen Select
+  // Output logic
   when (fsm.io.idleScreen) {
     txtController.io.active := true.B
     io.an := txtController.io.an
