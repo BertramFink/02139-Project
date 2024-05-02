@@ -10,16 +10,16 @@ class SevenSegController(maxCount: Int) extends Module {
     val an = Output(UInt(4.W))
   })
 
-  // Initialize BCD for price/sum
-  val bcdPrice = Module(new BcdTable())
-  val bcdSum = Module(new BcdTable())
-
   // Initialize 'Seven Segment Display'
   val sevSegNum = Module(new SevenSegNum)
   val sevSegChar = Module(new SevenSegChar)
 
   val segSelect = RegInit(0.U(2.W))
   val counter = RegInit(0.U(17.W))
+
+  // Initialize BCD for price/sum
+  val bcd = Module(new BcdTable())
+  bcd.io.address := Mux(segSelect > 1.U, io.sum, io.price)
 
   counter := counter + 1.U
   when(counter === maxCount.U) {
@@ -35,15 +35,12 @@ class SevenSegController(maxCount: Int) extends Module {
     is (3.U) { io.an := "b0111".U }
   }
 
-  bcdPrice.io.address := io.price
-  bcdSum.io.address := io.sum
-
   sevSegNum.io.in := 0.U
   switch(segSelect) {
-    is (0.U) { sevSegNum.io.in := bcdPrice.io.data(3,0) }
-    is (1.U) { sevSegNum.io.in := bcdPrice.io.data(7,4) }
-    is (2.U) { sevSegNum.io.in := bcdSum.io.data(3,0) }
-    is (3.U) { sevSegNum.io.in := bcdSum.io.data(7,4) }
+    is (0.U) { sevSegNum.io.in := bcd.io.data(3,0) }
+    is (1.U) { sevSegNum.io.in := bcd.io.data(7,4) }
+    is (2.U) { sevSegNum.io.in := bcd.io.data(3,0) }
+    is (3.U) { sevSegNum.io.in := bcd.io.data(7,4) }
   }
 
   val txtSelect = RegInit(0.U(1.W))
