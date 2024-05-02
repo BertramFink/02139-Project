@@ -36,7 +36,7 @@ class SevenSegChar extends Module {
     is (23.U) { sevSeg := "b1110110".U } // X
     is (24.U) { sevSeg := "b1101110".U } // Y
     is (25.U) { sevSeg := "b1011011".U } // Z
-    is (26.U) { sevSeg := "b1111111".U }
+    is (26.U) { sevSeg := "b0000000".U } // space
     is (27.U) { sevSeg := "b1111111".U }
     is (28.U) { sevSeg := "b1111111".U }
     is (29.U) { sevSeg := "b1111111".U }
