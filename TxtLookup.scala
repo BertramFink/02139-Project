@@ -10,6 +10,21 @@ class TxtLookup extends Module {
   val sevSeg = WireDefault(0.U)
 
   switch(io.in) {
+    is (0.U) { sevSeg := "b1110001".U } // F
+    is (1.U) { sevSeg := "b1011100".U } // O
+    is (2.U) { sevSeg := "b1011100".U } // O
+    is (3.U) { sevSeg := "b1011110".U } // d
+    is (4.U) { sevSeg := "b0000000".U } // Blank
+    is (5.U) { sevSeg := "b0000000".U } // Blank
+    is (6.U) { sevSeg := "b1101101".U } // S
+    is (7.U) { sevSeg := "b1011100".U } // O
+    is (8.U) { sevSeg := "b1011110".U } // d
+    is (9.U) { sevSeg := "b1110111".U } // A
+    is (10.U) { sevSeg := "b0000000".U } // Blank
+    is (11.U) { sevSeg := "b0000000".U } // Blank
+    is (12.U) { sevSeg := "b0000000".U } // Blank
+    is (13.U) { sevSeg := "b0000000".U } // Blank
+    /*
     is (0.U) { sevSeg := "b1110111".U } // A
     is (1.U) { sevSeg := "b1111100".U } // b
     is (2.U) { sevSeg := "b0111001".U } // C
@@ -42,6 +57,7 @@ class TxtLookup extends Module {
     is (29.U) { sevSeg := "b1111111".U }
     is (30.U) { sevSeg := "b1111111".U }
     is (31.U) { sevSeg := "b1111111".U }
+     */
   }
   io.out := sevSeg
 

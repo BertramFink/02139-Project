@@ -41,6 +41,11 @@ class VendingMachine(maxCount: Int) extends Module {
   sevSegController.io.price := io.price
   sevSegController.io.sum := datapath.io.sum
 
+  // Idle Screen
+  val txtController = Module(new TxtController(maxCount))
+
+  txtController.io.active := false.B
+
 
   val init = RegInit(1.U(1.W))
   when (init === 1.U) {
@@ -49,9 +54,9 @@ class VendingMachine(maxCount: Int) extends Module {
     io.an := "b0000".U
   }
 
-  // Idle Screen
-  val txtController = Module(new TxtController(maxCount))
+  // Screen Select
   when (fsm.io.idleScreen) {
+    txtController.io.active := true.B
     io.an := txtController.io.an
     io.seg := txtController.io.seg
   } .otherwise {
