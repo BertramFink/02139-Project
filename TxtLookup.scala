@@ -24,6 +24,9 @@ class TxtLookup extends Module {
     is (11.U) { sevSeg := "b0000000".U } // Blank
     is (12.U) { sevSeg := "b0000000".U } // Blank
     is (13.U) { sevSeg := "b0000000".U } // Blank
+    is (14.U) { sevSeg := "b1110001".U } // F
+    is (15.U) { sevSeg := "b1011100".U } // O
+    is (16.U) { sevSeg := "b1011100".U } // O
     /*
     is (0.U) { sevSeg := "b1110111".U } // A
     is (1.U) { sevSeg := "b1111100".U } // b
