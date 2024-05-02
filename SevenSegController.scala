@@ -4,6 +4,7 @@ import chisel3.util._
 class SevenSegController(maxCount: Int) extends Module {
   val io = IO(new Bundle {
     val idleScreen = Input(Bool())
+    val alarm = Input(Bool())
     val price = Input(UInt(8.W))
     val sum = Input(UInt(8.W))
     val seg = Output(UInt(7.W))
@@ -43,6 +44,35 @@ class SevenSegController(maxCount: Int) extends Module {
     is (3.U) { sevSegNum.io.in := bcd.io.data(7,4) }
   }
 
+  // Alarm
+
+  val alarmCounter = RegInit(0.U(32.W))
+  val alarmSelect = RegInit(0.U(1.W))
+  when(io.alarm === true.B |alarmSelect === false.B) {
+    alarmCounter := alarmCounter + 1.U
+    when (alarmCounter === (maxCount*40).U) {
+      alarmSelect := ~alarmSelect
+      alarmCounter := 0.U
+    }
+    // switch(alarmSelect) {
+    //   is(0.U) {
+    //     io.an := "b0000".U
+    //     io.seg := "b1111111".U
+    //   }
+    //   is(1.U) {
+    //     io.seg := sevSegController.io.seg
+    //     io.an := sevSegController.io.an
+    //   }
+    // }
+  }
+
+  // when(alarmSelect === false.B) {
+  //   io.an := "b0000".U
+  //   io.seg := "b1111111".U
+  // }
+
+  // Text
+
   val txtSelect = RegInit(0.U(1.W))
   val txtCounter = RegInit(0.U(32.W))
 
@@ -71,6 +101,8 @@ class SevenSegController(maxCount: Int) extends Module {
   io.seg := ~sevSegNum.io.out
   when (io.idleScreen) {
     io.seg := ~sevSegChar.io.out
+  } .elsewhen(alarmSelect === false.B) {
+    io.seg := "b1111111".U
   }
 
   val init = RegInit(1.U(1.W))

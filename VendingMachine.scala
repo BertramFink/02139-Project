@@ -39,6 +39,7 @@ class VendingMachine(maxCount: Int) extends Module {
   val sevSegController = Module(new SevenSegController(maxCount))
 
   sevSegController.io.idleScreen := fsm.io.idleScreen
+  sevSegController.io.alarm := fsm.io.alarm
   sevSegController.io.price := io.price
   sevSegController.io.sum := datapath.io.sum
 
@@ -48,6 +49,7 @@ class VendingMachine(maxCount: Int) extends Module {
   // LEDs
   io.releaseCan := fsm.io.releaseCan
   io.alarm := fsm.io.alarm
+
 }
 
 // generate Verilog

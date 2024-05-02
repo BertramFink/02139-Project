@@ -42,7 +42,7 @@ class FSM extends Module {
         stateReg := coin2
       }.elsewhen(rising_edge(io.coin5)) {
         stateReg := coin5
-      }.elsewhen(io.buy) {
+      }.elsewhen(rising_edge(io.buy)) {
         stateReg := buy
       }
     }
