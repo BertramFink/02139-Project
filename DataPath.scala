@@ -19,6 +19,7 @@ class DataPath extends Module {
     priceAddr := priceAddr + 1.U
   }
 
+  // val priceMem = RegInit(VecInit(Seq.fill(4)(0.U(5.W))))
   val priceMem = SyncReadMem(4, UInt(5.W))
 
   val price = Wire(UInt(5.W))
@@ -26,7 +27,12 @@ class DataPath extends Module {
   
   io.activePrice := price
 
-  when (io.setPrice === true.B) {
+  // Rising Edge
+  def rising_edge(input:Bool):Bool = {
+    input & !RegNext(input)
+  }
+
+  when (rising_edge(io.setPrice)) {
     priceMem.write(priceAddr, io.price)
   }
 
