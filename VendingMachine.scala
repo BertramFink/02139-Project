@@ -16,17 +16,12 @@ class VendingMachine(maxCount: Int) extends Module {
   })
 
   // Syncronized inputs
-  val coin2_sync = RegInit(0.U(1.W))
-  val coin5_sync = RegInit(0.U(1.W))
-  val buy_sync = RegInit(0.U(1.W))
-  val setPrice_sync = RegInit(0.U(1.W))
-  val nextItem_sync = RegInit(0.U(1.W))
-  coin2_sync := io.coin2
-  coin5_sync := io.coin5
-  buy_sync := io.buy
-  setPrice_sync := io.setPrice
-  nextItem_sync := io.nextItem
-
+  val coin2_sync = RegNext(io.coin2)
+  val coin5_sync = RegNext(io.coin5)
+  val buy_sync = RegNext(io.buy)
+  val setPrice_sync = RegNext(io.setPrice)
+  val nextItem_sync = RegNext(io.nextItem)
+  
   // Finite State Machine and Datapath
   val fsm = Module(new FSM)
   val datapath = Module(new DataPath)
