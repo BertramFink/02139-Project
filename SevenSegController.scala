@@ -16,15 +16,12 @@ class SevenSegController(maxCount: Int) extends Module {
   val sevSegChar = Module(new SevenSegChar)
 
   val segSelect = RegInit(0.U(2.W))
-  val counter = RegInit(0.U(17.W))
+  val firstCounter = RegInit(0.U(17.W))
 
-  // Initialize BCD for price/sum
-  val bcd = Module(new BcdTable())
-  bcd.io.address := Mux(segSelect(1), io.sum, io.price)
-
-  counter := counter + 1.U
-  when(counter === maxCount.U) {
-    counter := 0.U
+  firstCounter := firstCounter + 1.U
+  val firstCount = (firstCounter === maxCount.U)
+  when(firstCount) {
+    firstCounter := 0.U
     segSelect := segSelect + 1.U
   }
 
@@ -36,6 +33,10 @@ class SevenSegController(maxCount: Int) extends Module {
     is (3.U) { io.an := "b0111".U }
   }
 
+  // Initialize BCD for price/sum
+  val bcd = Module(new BcdTable())
+  bcd.io.address := Mux(segSelect(1), io.sum, io.price)
+
   sevSegNum.io.in := 0.U
   switch(segSelect) {
     is (0.U) { sevSegNum.io.in := bcd.io.data(3,0) }
@@ -46,24 +47,37 @@ class SevenSegController(maxCount: Int) extends Module {
 
   // Alarm
 
-  val alarmCounter = RegInit(0.U(32.W))
-  val alarmSelect = RegInit(0.U(1.W))
-  when(io.alarm === true.B | alarmSelect === false.B) {
-    alarmCounter := alarmCounter + 1.U
-    when (alarmCounter === (maxCount*40).U) {
-      alarmSelect := ~alarmSelect
-      alarmCounter := 0.U
+  val secondCounter = RegInit(0.U(6.W))
+  val secondCount = (secondCounter === 40.U) & firstCount
+  when (firstCount) {
+    secondCounter := secondCounter + 1.U
+    when (secondCount) {
+      secondCounter := 0.U
     }
-  } q
+  }
+
+  val alarmSelect = RegInit(false.B)
+  when (secondCount) {
+    when (io.alarm) {
+      alarmSelect := ~alarmSelect
+    } .otherwise {
+      alarmSelect := false.B
+    }
+  }
 
   // Text
 
-  val txtSelect = RegInit(0.U(5.W))
-  val txtCounter = RegInit(0.U(32.W))
+  val thirdCounter = RegInit(0.U(3.W))
+  val thirdCount = (thirdCounter === 5.U) & secondCount
+  when (secondCount) {
+    thirdCounter := thirdCounter + 1.U
+    when(thirdCount) {
+      thirdCounter := 0.U
+    }
+  }
 
-  txtCounter := txtCounter + 1.U
-  when(txtCounter === (maxCount*200).U) {
-    txtCounter := 0.U
+  val txtSelect = RegInit(0.U(5.W))
+  when (thirdCount) {
     txtSelect := txtSelect + 1.U
     when (txtSelect === 13.U) {
       txtSelect := 0.U
@@ -87,9 +101,9 @@ class SevenSegController(maxCount: Int) extends Module {
 
   when (io.idleScreen) {
     io.seg := ~sevSegChar.io.out
-  }.elsewhen(alarmSelect === false.B) {
+  } .elsewhen(alarmSelect) {
     io.seg := "b1111111".U
-  }.otherwise {
+  } .otherwise {
     io.seg := ~sevSegNum.io.out
   }
 

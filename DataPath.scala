@@ -34,16 +34,16 @@ class DataPath extends Module {
   when (io.add2 === true.B) {
     when(sum < 98.U) {
       sum := sum + 2.U
-    }.otherwise {
+    } .otherwise {
       sum := 99.U  
     }
   }.elsewhen (io.add5 === true.B) {
     when(sum < 95.U) {
       sum := sum + 5.U
-    }.otherwise {
+    } .otherwise {
       sum := 99.U  
     }
-  }.elsewhen (io.purchase === true.B) {
+  } .elsewhen (io.purchase === true.B) {
     sum := sum - price
   }
 }

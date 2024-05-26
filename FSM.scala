@@ -42,11 +42,11 @@ class FSM extends Module {
     is (idle) {
       when(rising_edge(io.coin2)) {
         stateReg := coin2
-      }.elsewhen(rising_edge(io.coin5)) {
+      } .elsewhen(rising_edge(io.coin5)) {
         stateReg := coin5
-      }.elsewhen(rising_edge(io.buy)) {
+      } .elsewhen(rising_edge(io.buy)) {
         stateReg := buy
-      }.elsewhen(rising_edge(io.nextItem)) {
+      } .elsewhen(rising_edge(io.nextItem)) {
         stateReg := nextItem
       }
     }
@@ -59,7 +59,7 @@ class FSM extends Module {
     is (buy) {
       when(io.enoughMoney === false.B) {
         stateReg := alarm
-      }.otherwise {
+      } .otherwise {
         stateReg := releaseCan
       }
     }
