@@ -11,10 +11,6 @@ class SevenSegController(maxCount: Int) extends Module {
     val an = Output(UInt(4.W))
   })
 
-  // Initialize 'Seven Segment Display'
-  val sevSegNum = Module(new SevenSegNum)
-  val sevSegChar = Module(new SevenSegChar)
-
   val segSelect = RegInit(0.U(2.W))
   val firstCounter = RegInit(0.U(17.W))
 
@@ -38,6 +34,7 @@ class SevenSegController(maxCount: Int) extends Module {
   bcd.io.address := Mux(segSelect(1), io.sum, io.price)
 
   // Output number to display
+  val sevSegNum = Module(new SevenSegNum)
   sevSegNum.io.in := Mux(segSelect(0), bcd.io.data(7,4), bcd.io.data(3,0))
 
   // Alarm
@@ -88,6 +85,7 @@ class SevenSegController(maxCount: Int) extends Module {
     }
   }
 
+  val sevSegChar = Module(new SevenSegChar)
   sevSegChar.io.in := text(txtSelect - segSelect + 3.U)
 
   // Toggle between modes

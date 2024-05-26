@@ -27,8 +27,7 @@ class SevenSegNum extends Module {
     is (12.U) { sevSeg := "b1011000".U} // c
     is (13.U) { sevSeg := "b1011110".U} // d
     is (14.U) { sevSeg := "b1111001".U} // e
-    //is (15.U) { sevSeg := "b1110001".U} // f
-    is (15.U) { sevSeg := "b1111111".U} // Blank
+    is (15.U) { sevSeg := "b1110001".U} // f
   }
 
   // *** end adding the table

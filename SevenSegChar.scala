@@ -44,7 +44,4 @@ class SevenSegChar extends Module {
     is (31.U) { sevSeg := "b1111111".U }
   }
   io.out := sevSeg
-
-  // Food select?
-  
 }
