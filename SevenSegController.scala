@@ -37,16 +37,10 @@ class SevenSegController(maxCount: Int) extends Module {
   val bcd = Module(new BcdTable())
   bcd.io.address := Mux(segSelect(1), io.sum, io.price)
 
-  sevSegNum.io.in := 0.U
-  switch(segSelect) {
-    is (0.U) { sevSegNum.io.in := bcd.io.data(3,0) }
-    is (1.U) { sevSegNum.io.in := bcd.io.data(7,4) }
-    is (2.U) { sevSegNum.io.in := bcd.io.data(3,0) }
-    is (3.U) { sevSegNum.io.in := bcd.io.data(7,4) }
-  }
+  // Output number to display
+  sevSegNum.io.in := Mux(segSelect(0), bcd.io.data(7,4), bcd.io.data(3,0))
 
   // Alarm
-
   val secondCounter = RegInit(0.U(6.W))
   val secondCount = (secondCounter === 40.U) & firstCount
   when (firstCount) {
@@ -66,7 +60,6 @@ class SevenSegController(maxCount: Int) extends Module {
   }
 
   // Text
-
   val thirdCounter = RegInit(0.U(3.W))
   val thirdCount = (thirdCounter === 5.U) & secondCount
   when (secondCount) {
@@ -98,7 +91,6 @@ class SevenSegController(maxCount: Int) extends Module {
   sevSegChar.io.in := text(txtSelect - segSelect + 3.U)
 
   // Toggle between modes
-
   when (io.idleScreen) {
     io.seg := ~sevSegChar.io.out
   } .elsewhen(alarmSelect) {
@@ -108,7 +100,6 @@ class SevenSegController(maxCount: Int) extends Module {
   }
 
   // Init
-
   when (reset.asBool) {
     io.seg := "b0111111".U
     io.an := "b0000".U
